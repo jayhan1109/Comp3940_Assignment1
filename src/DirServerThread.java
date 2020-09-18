@@ -50,18 +50,22 @@ public class DirServerThread extends Thread {
                         out.println(fileName + "\n");
                     }
                 }
+            } else {
+                System.out.println(in.readLine());
+
+                String topPart = "<!DOCTYPE html><html><body><ul>";
+                String bottomPart = "</ul></body></html>";
+                path = path.replace("/", "\\");
+                String body = getListing("C:" + path);
+
+                out.write("HTTP/1.0 200 OK\n");
+                out.flush();
+                out.write("Content-Type: text/html\n\n");
+                out.flush();
+
+                out.write("" + topPart + body + bottomPart);
+                out.flush();
             }
-//            else {
-//                System.out.println(in.readLine());
-//
-//                out.write("HTTP/1.0 200 OK\n");
-//                out.flush();
-//                out.write("Content-Type: text/html\n\n");
-//                out.flush();
-//
-//                out.write("<h1>Welcome!.</h1>");
-//                out.flush();
-//            }
 
             socket.close();
         } catch (Exception e) {
@@ -78,8 +82,23 @@ public class DirServerThread extends Thread {
 
     String getUserAgent(String request) {
         int start = request.indexOf("User-Agent: ") + 12;
-        request = request.substring(start,start+7);
+        request = request.substring(start, start + 7);
         return request;
+    }
+
+    private String getListing(String path) {
+        String dirList = "";
+        File dir = new File(path);
+        String[] chld = dir.list();
+        if (chld == null) {
+            return "Invalid Directory\n";
+        } else {
+            for (int i = 0; i < chld.length; i++) {
+                String fileName = chld[i];
+                dirList += "<li>" + chld[i] + "</li>";
+            }
+        }
+        return dirList;
     }
 
 }
