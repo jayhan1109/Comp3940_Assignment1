@@ -26,12 +26,12 @@ public class DirServerThread extends Thread {
                 request += inputLine + "\n";
 
                 if (path.equals("") && request.contains("GET")) {
-                    path = getPath(request);
+                    path = DirUtils.getPath(request);
                     System.out.println(path);
                 }
 
                 if (request.contains("User-Agent")) {
-                    userAgent = getUserAgent(request);
+                    userAgent = DirUtils.getUserAgent(request);
                     System.out.println(userAgent);
 
                     isConsole = userAgent.equals("Console");
@@ -43,7 +43,9 @@ public class DirServerThread extends Thread {
 
 
             if (isConsole) {
-                String body = getListing(path);
+                String body = DirUtils.getListing(path, isConsole);
+                if (body.equals("Invalid Directory"))
+                    throw new Exception("Invalid Directory");
                 out.println(body);
             } else {
                 System.out.println(in.readLine());
@@ -51,7 +53,11 @@ public class DirServerThread extends Thread {
                 String topPart = "<!DOCTYPE html><html><body><ul>";
                 String bottomPart = "</ul></body></html>";
                 path = path.replace("/", "\\");
-                String body = getListing("C:" + path);
+                String body = DirUtils.getListing("C:" + path, isConsole);
+
+
+                if (body.equals("Invalid Directory"))
+                    throw new Exception("Invalid Directory");
 
                 out.write("HTTP/1.0 200 OK\n");
                 out.flush();
@@ -67,41 +73,5 @@ public class DirServerThread extends Thread {
             System.out.println("Exception in thread: " + Thread.currentThread().getId() + "\nMessage: " + e.getMessage() + "\n");
         }
     }
-
-    String getPath(String request) {
-        int start = request.indexOf("GET ") + 4;
-        int end = request.indexOf(" HTTP/");
-        request = request.substring(start, end);
-        return request;
-    }
-
-    String getUserAgent(String request) {
-        int start = request.indexOf("User-Agent: ") + 12;
-        request = request.substring(start, start + 7);
-        return request;
-    }
-
-    private String getListing(String path) {
-        String dirList = "";
-        File dir = new File(path);
-        String[] chld = dir.list();
-
-        if (chld == null) {
-            return "Invalid Directory\n";
-        }
-
-        if (isConsole) {
-            for (int i = 0; i < chld.length; i++) {
-                dirList += chld[i] + "\n";
-            }
-        } else {
-            for (int i = 0; i < chld.length; i++) {
-                dirList += "<li>" + chld[i] + "</li>";
-            }
-        }
-
-        return dirList;
-    }
-
 }
 
