@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+
 import java.io.*;
 
 public class DirUtils {
@@ -13,21 +14,20 @@ public class DirUtils {
         }
 
         if (isConsole) {
-            for (int i = 0; i < chld.length; i++) {
-                dirList += chld[i] + "\n";
+            for (String s : chld) {
+                dirList += s + "\n";
             }
 
-            // Return as JSON
-            Gson gsonObj = new Gson();
-            dirList = gsonObj.toJson(dirList);
+            Gson gson = new Gson();
+            dirList = gson.toJson(dirList);
 
         } else {
-            for (int i = 0; i < chld.length; i++) {
-                dirList += "<li><button>" + chld[i] + "</button></li>";
+            for (String s : chld) {
+                dirList += "<li><button>" + s + "</button></li>";
             }
         }
 
-        return dirList;
+        return dirList.toString();
     }
 
 
