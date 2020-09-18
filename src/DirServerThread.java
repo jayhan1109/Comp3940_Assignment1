@@ -4,6 +4,7 @@ import java.io.*;
 public class DirServerThread extends Thread {
     private Socket socket = null;
     private boolean isConsole = true;
+    DirUtils dirUtils = new DirUtils();
 
     public DirServerThread(Socket socket) {
         super("DirServerThread");
@@ -15,28 +16,56 @@ public class DirServerThread extends Thread {
              BufferedReader in = new BufferedReader(new InputStreamReader(
                      socket.getInputStream()));
         ) {
-            if (isConsole) {
-                String inputLine, outputLine;
-                inputLine = in.readLine();
-                File dir = new File(inputLine);
-                String[] chld = dir.list();
-                if (chld == null) {
-                    out.println("Invalid Directory\n");
-                } else {
-                    for (int i = 0; i < chld.length; i++) {
-                        String fileName = chld[i];
-                        out.println(fileName + "\n");
-                    }
+
+            String inputLine, outputLine;
+            String request = "";
+            String path = "";
+            String userAgent = "";
+
+            while ((inputLine = in.readLine()) != null) {
+
+                request += inputLine + "\n";
+
+                if (path.equals("") && request.contains("GET")) {
+                    path = dirUtils.getPath(request);
+                    System.out.println(path);
                 }
+
+                if (request.contains("User-Agent")) {
+                    userAgent = dirUtils.getUserAgent(request);
+                    System.out.println(userAgent);
+
+                    isConsole = userAgent.equals("Console");
+                    System.out.println(isConsole);
+
+                    break;
+                }
+            }
+
+
+            if (isConsole) {
+                String body = dirUtils.getListing(path, isConsole);
+                if (body.equals("Invalid Directory"))
+                    throw new Exception("Invalid Directory");
+                out.println(body);
             } else {
                 System.out.println(in.readLine());
-               
+
+                String topPart = "<!DOCTYPE html><html><body><ul>";
+                String bottomPart = "</ul></body></html>";
+                path = path.replace("/", "\\");
+                String body = dirUtils.getListing("C:" + path, isConsole);
+
+
+                if (body.equals("Invalid Directory"))
+                    throw new Exception("Invalid Directory");
+
                 out.write("HTTP/1.0 200 OK\n");
                 out.flush();
                 out.write("Content-Type: text/html\n\n");
                 out.flush();
 
-                out.write("<h1>Welcome!.</h1>");
+                out.write("" + topPart + body + bottomPart);
                 out.flush();
             }
 
