@@ -20,8 +20,11 @@ public class DirServerThread extends Thread {
             String request = "";
             String path = "";
             String userAgent = "";
+
             while ((inputLine = in.readLine()) != null) {
+
                 request += inputLine + "\n";
+
                 if (path.equals("") && request.contains("GET")) {
                     path = getPath(request);
                     System.out.println(path);
@@ -40,16 +43,8 @@ public class DirServerThread extends Thread {
 
 
             if (isConsole) {
-                File dir = new File(path);
-                String[] chld = dir.list();
-                if (chld == null) {
-                    out.println("Invalid Directory\n");
-                } else {
-                    for (int i = 0; i < chld.length; i++) {
-                        String fileName = chld[i];
-                        out.println(fileName + "\n");
-                    }
-                }
+                String body = getListing(path);
+                out.println(body);
             } else {
                 System.out.println(in.readLine());
 
@@ -90,14 +85,21 @@ public class DirServerThread extends Thread {
         String dirList = "";
         File dir = new File(path);
         String[] chld = dir.list();
+
         if (chld == null) {
             return "Invalid Directory\n";
+        }
+
+        if (isConsole) {
+            for (int i = 0; i < chld.length; i++) {
+                dirList += chld[i] + "\n";
+            }
         } else {
             for (int i = 0; i < chld.length; i++) {
-                String fileName = chld[i];
                 dirList += "<li>" + chld[i] + "</li>";
             }
         }
+
         return dirList;
     }
 
