@@ -4,6 +4,7 @@ import java.io.*;
 public class DirServerThread extends Thread {
     private Socket socket = null;
     private boolean isConsole = true;
+    DirUtils dirUtils = new DirUtils();
 
     public DirServerThread(Socket socket) {
         super("DirServerThread");
@@ -26,12 +27,12 @@ public class DirServerThread extends Thread {
                 request += inputLine + "\n";
 
                 if (path.equals("") && request.contains("GET")) {
-                    path = DirUtils.getPath(request);
+                    path = dirUtils.getPath(request);
                     System.out.println(path);
                 }
 
                 if (request.contains("User-Agent")) {
-                    userAgent = DirUtils.getUserAgent(request);
+                    userAgent = dirUtils.getUserAgent(request);
                     System.out.println(userAgent);
 
                     isConsole = userAgent.equals("Console");
@@ -43,7 +44,7 @@ public class DirServerThread extends Thread {
 
 
             if (isConsole) {
-                String body = DirUtils.getListing(path, isConsole);
+                String body = dirUtils.getListing(path, isConsole);
                 if (body.equals("Invalid Directory"))
                     throw new Exception("Invalid Directory");
                 out.println(body);
@@ -53,7 +54,7 @@ public class DirServerThread extends Thread {
                 String topPart = "<!DOCTYPE html><html><body><ul>";
                 String bottomPart = "</ul></body></html>";
                 path = path.replace("/", "\\");
-                String body = DirUtils.getListing("C:" + path, isConsole);
+                String body = dirUtils.getListing("C:" + path, isConsole);
 
 
                 if (body.equals("Invalid Directory"))
