@@ -10,7 +10,7 @@ public class DirClient {
     }
 
     public String getListing() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try (Socket socket = new Socket("localhost", 8086);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
@@ -20,11 +20,11 @@ public class DirClient {
             out.println("User-Agent: Console");
 
             while ((fromServer = in.readLine()) != null) {
-                result += fromServer + "\n";
+                result.append(fromServer).append("\n");
             }
         } catch (Exception e) {
             System.err.println("Error\n");
         }
-        return result;
+        return result.toString();
     }
 }

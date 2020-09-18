@@ -3,7 +3,7 @@ import java.io.*;
 
 public class DirServerThread extends Thread {
     private Socket socket = null;
-    private boolean isConsole = true;
+    private boolean isConsole;
     DirUtils dirUtils = new DirUtils();
 
     public DirServerThread(Socket socket) {
@@ -17,7 +17,7 @@ public class DirServerThread extends Thread {
                      socket.getInputStream()));
         ) {
 
-            String inputLine, outputLine;
+            String inputLine;
             String request = "";
             String path = "";
             String userAgent = "";
