@@ -27,7 +27,7 @@ public class DirUtils {
             }
         }
 
-        return dirList.toString();
+        return dirList;
     }
 
 

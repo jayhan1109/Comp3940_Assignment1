@@ -54,7 +54,15 @@ public class DirServerThread extends Thread {
                 String topPart = "<!DOCTYPE html><html><body><ul>";
                 String bottomPart = "</ul></body></html>";
                 path = path.replace("/", "\\");
-                String body = dirUtils.getListing("C:" + path, isConsole);
+                String body;
+
+                String OS;
+                OS = System.getProperty("os.name");
+                if (OS.startsWith("Windows")) {
+                    body = dirUtils.getListing("C:" + path, isConsole);
+                } else {
+                    body = dirUtils.getListing("/usr" + path, isConsole);
+                }
 
 
                 if (body.equals("Invalid Directory"))
