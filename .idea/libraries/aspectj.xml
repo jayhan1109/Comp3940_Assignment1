@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="aspectj">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/lib/aspectj.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/src/lib/aspectj.jar!/files/doc/runtime-apidocs" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/lib/aspectj.jar!/files/doc/examples" />
+      <root url="jar://$PROJECT_DIR$/src/lib/aspectj.jar!/files/doc/examples/ltw" />
+    </SOURCES>
+  </library>
+</component>

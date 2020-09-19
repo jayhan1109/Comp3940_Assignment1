@@ -46,18 +46,15 @@ public class DirServerThread extends Thread {
                 // Parse path from request
                 if (path.equals("") && request.contains("GET")) {
                     path = dirUtils.getPath(request);
-                    System.out.println(path);
                 }
 
                 // Parse User-Agent from request
                 if (request.contains("User-Agent")) {
                     userAgent = dirUtils.getUserAgent(request);
-                    System.out.println(userAgent);
 
                     // If User-Agent is from console
                     // Set isConsole variable to ture
                     isConsole = userAgent.equals("Console");
-                    System.out.println(isConsole);
 
                     // Break while loop after parsing User-Agent
                     break;
@@ -67,12 +64,8 @@ public class DirServerThread extends Thread {
             // Check if the
             if (isConsole) {
                 String body = dirUtils.getListing(path, isConsole);
-                if (body.equals("Invalid Directory"))
-                    throw new Exception("Invalid Directory");
                 out.println(body);
             } else {
-                System.out.println(in.readLine());
-
                 String topPart = "<!DOCTYPE html><html><body><h2 style=\"\n" +
                         "        color: #444;\n" +
                         "        width: 300px;\n" +
@@ -86,7 +79,6 @@ public class DirServerThread extends Thread {
                 // Check the user's Operating System.
                 String OS;
                 OS = System.getProperty("os.name");
-                System.out.println(OS);
                 if (OS.startsWith("Windows")) {
                     path = path.replace("/", "\\");
                     body = dirUtils.getListing("C:" + path, isConsole);
@@ -95,17 +87,27 @@ public class DirServerThread extends Thread {
                 }
 
                 // Throw error if directory path is invalid
-                if (body.equals("Invalid Directory"))
-                    throw new Exception("Invalid Directory");
+                if (body.equals("Invalid Directory")) {
+                    out.write("HTTP/1.0 200 OK\n");
+                    out.write("Content-Type: text/html\n\n");
+                    out.write("<!DOCTYPE html><html><body><h2 style=\"\n" +
+                            "        color: #444;\n" +
+                            "        width: 300px;\n" +
+                            "        text-align: center;\n" +
+                            "        font-family: sans-serif;\n" +
+                            "        font-size: 40px;\n" +
+                            "      \">Invalid Directory</h2>" + bottomPart);
+                    out.flush();
+                } else {
+                    // Return to Client with files and folder lists
+                    out.write("HTTP/1.0 200 OK\n");
+                    out.flush();
+                    out.write("Content-Type: text/html\n\n");
+                    out.flush();
 
-                // Return to Client with files and folder lists
-                out.write("HTTP/1.0 200 OK\n");
-                out.flush();
-                out.write("Content-Type: text/html\n\n");
-                out.flush();
-
-                out.write("" + topPart + body + bottomPart);
-                out.flush();
+                    out.write("" + topPart + body + bottomPart);
+                    out.flush();
+                }
             }
 
             // Close socket
@@ -113,6 +115,7 @@ public class DirServerThread extends Thread {
         } catch (Exception e) {
             // Print error message.
             System.out.println("Exception in thread: " + Thread.currentThread().getId() + "\nMessage: " + e.getMessage() + "\n");
+            Thread.currentThread().interrupt();
         }
     }
 }
