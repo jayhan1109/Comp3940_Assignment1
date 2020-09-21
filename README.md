@@ -30,3 +30,11 @@ ex) http://localhost:8086/CST
 ```
 javac -cp .;aspectj\lib\aspectjrt.jar;aspectj\lib\aspectjweaver.jar;lib/gson.jar *.java
 ```
+
+## What we did
+##### Jeong-Ho Han
+  Implemented Thread Pool, AspectJ and Parsing from Browser
+##### Sung-Min Jin
+  Implemented Reflection, JSON, and Creating DirUtils.
+##### Gyeong-Min Lee
+  Implemented HTML & CSS codes, parsing from Console, and error handling.
