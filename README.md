@@ -32,9 +32,9 @@ javac -cp .;aspectj\lib\aspectjrt.jar;aspectj\lib\aspectjweaver.jar;lib/gson.jar
 ```
 
 ## What we did
-##### Jeong-Ho Han
+#### Jeong-Ho Han
   Implemented Thread Pool, AspectJ and Parsing from Browser
-##### Sung-Min Jin
+#### Sung-Min Jin
   Implemented Reflection, JSON, and Creating DirUtils.
-##### Gyeong-Min Lee
+#### Gyeong-Min Lee
   Implemented HTML & CSS codes, parsing from Console, and error handling.
