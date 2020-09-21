@@ -13,14 +13,14 @@ java -javaagent:aspectj\lib\aspectjweaver.jar -classpath .;lib/gson.jar;aspectj\
 
 ### Client (From Console)
 ```
-java Acitivity **[path]**
+java Acitivity __[path]__
 
 ex) java Activity C:\
 ```
 
 ### Browser
 ```
-http://localhost:8086/**[path following after C:\]**
+http://localhost:8086/ __[path following after C:\]__
 
 ex) http://localhost:8086/CST
 (This will bring lists in C:\CST)
